@@ -1,0 +1,32 @@
+name: Static analysis
+
+on:
+  push:
+    branches:
+      - 1.x
+  pull_request:
+    branches:
+      - 1.x
+
+jobs:
+  phpstan:
+    name: PHPStan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: PHPStan
+        run: make static-phpstan
+
+  php-cs-fixer:
+    name: PHP-CS-Fixer
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: PHP-CS-Fixer
+        run: make static-cs-check
