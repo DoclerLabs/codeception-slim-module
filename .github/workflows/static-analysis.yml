@@ -1,12 +1,6 @@
 name: Static analysis
 
-on:
-  push:
-    branches:
-      - 1.x
-  pull_request:
-    branches:
-      - 1.x
+on: [push, pull_request]
 
 jobs:
   phpstan:
