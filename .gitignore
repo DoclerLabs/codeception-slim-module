@@ -1,0 +1,8 @@
+# Files
+!/test/output/.gitkeep
+/composer.lock
+
+# Directories
+/test/output/*
+/test/support/_generated
+/vendor
