@@ -33,7 +33,7 @@ $app->any(
                                 'media_type' => $uploadedFile->getClientMediaType(),
                                 'size'       => $uploadedFile->getSize(),
                                 'error'      => $uploadedFile->getError(),
-                                'content'    => (string)$uploadedFile->getStream()
+                                'content'    => (string)$uploadedFile->getStream(),
                             ];
                         },
                         $request->getUploadedFiles()

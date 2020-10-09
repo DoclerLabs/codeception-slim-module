@@ -1,6 +1,9 @@
 # Files
-!/test/output/.gitkeep
+.php_cs
+.php_cs.cache
 /composer.lock
+/phpstan.neon
+!/test/output/.gitkeep
 
 # Directories
 /test/output/*
