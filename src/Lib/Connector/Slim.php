@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DoclerLabs\CodeceptionSlimModule\Lib\Connector;
 
 use Psr\Http\Message\UploadedFileInterface;
+use RuntimeException;
 use Slim\App;
 use Slim\Http\Cookies;
 use Slim\Http\Environment;
@@ -38,8 +39,13 @@ class Slim extends AbstractBrowser
     {
         $slimRequest = $this->convertRequest($request);
 
+        $stream = fopen('php://temp', 'wb+');
+        if ($stream === false) {
+            throw new RuntimeException('Could not open `php://temp` stream.');
+        }
+
         $headers      = new Headers(['Content-Type' => 'text/html; charset=UTF-8']);
-        $body         = new Stream(fopen('php://temp', 'w+'));
+        $body         = new Stream($stream);
         $slimResponse = new Response(200, $headers, $body);
         $slimResponse = $this->app->process($slimRequest, $slimResponse);
 
@@ -52,10 +58,11 @@ class Slim extends AbstractBrowser
 
     private function convertRequest(BrowserKitRequest $request): Request
     {
-        $environment = Environment::mock($request->getServer());
-        $uri         = Uri::createFromString($request->getUri());
-        $headers     = Headers::createFromEnvironment($environment);
-        $cookies     = Cookies::parseHeader($headers->get('Cookie', []));
+        $environment  = Environment::mock($request->getServer());
+        $uri          = Uri::createFromString($request->getUri());
+        $headers      = Headers::createFromEnvironment($environment);
+        $cookieHeader = $headers->get('Cookie', []);
+        $cookies      = Cookies::parseHeader($cookieHeader[0] ?? '');
 
         $slimRequest = Request::createFromEnvironment($environment);
         $slimRequest = $slimRequest
