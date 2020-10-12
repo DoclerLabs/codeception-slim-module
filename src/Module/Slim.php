@@ -11,6 +11,39 @@ use Codeception\TestInterface;
 use DoclerLabs\CodeceptionSlimModule\Lib\Connector\Slim as SlimConnector;
 use Slim\App;
 
+/**
+ * This module uses Slim App to emulate requests and test response.
+ *
+ * ## Configuration
+ *
+ * ### Slim 3.x
+ *
+ * * application: 'app/bootstrap.php' - relative path to file which bootstrap and returns your `Slim\App` instance.
+ *
+ * #### Example (`test/suite/functional.suite.yml`)
+ * ```yaml
+ * modules:
+ *   enabled:
+ *     - DoclerLabs\CodeceptionSlimModule\Module\Slim:
+ *         application: 'app/bootstrap.php'
+ * ```
+ *
+ * ## Public Properties
+ *
+ * * app - Slim App instance
+ *
+ * Usage example:
+ *
+ * ```yaml
+ * actor: FunctionalTester
+ * modules:
+ *   enabled:
+ *     - DoclerLabs\CodeceptionSlimModule\Module\Slim:
+ *         application: 'app/bootstrap.php'
+ *     - REST:
+ *         depends: DoclerLabs\CodeceptionSlimModule\Module\Slim
+ * ```
+ */
 class Slim extends Framework
 {
     /** @var App */
