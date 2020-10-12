@@ -75,11 +75,12 @@ class Slim extends AbstractBrowser
             $slimRequest = $slimRequest->withHeader($key, $headers->get($key));
         }
 
-        if ($request->getContent() !== null) {
+        $requestContent = $request->getContent();
+        if ($requestContent !== null) {
             $body = new RequestBody();
-            $body->write($request->getContent());
-            $slimRequest = $slimRequest
-                ->withBody($body);
+            $body->write($requestContent);
+
+            $slimRequest = $slimRequest->withBody($body);
         }
 
         $parsed = [];
@@ -89,32 +90,42 @@ class Slim extends AbstractBrowser
 
         // Make sure we do not overwrite a request with a parsed body.
         if (!$slimRequest->getParsedBody()) {
-            $slimRequest = $slimRequest
-                ->withParsedBody($parsed);
+            $slimRequest = $slimRequest->withParsedBody($parsed);
         }
 
         return $slimRequest;
     }
 
+    /**
+     * Convert uploaded file list to UploadedFile instances.
+     *
+     * @param array $files List of uploaded file instances, that implements `Psr\Http\Message\UploadedFileInterface`,
+     *                     or meta data about uploaded file items from $_FILES, indexed with field name.
+     *
+     * @return array<string, UploadedFileInterface>
+     */
     private function convertFiles(array $files): array
     {
-        $fileObjects = [];
+        $uploadedFiles = [];
         foreach ($files as $fieldName => $file) {
             if ($file instanceof UploadedFileInterface) {
-                $fileObjects[$fieldName] = $file;
+                $uploadedFiles[$fieldName] = $file;
             } elseif (!isset($file['tmp_name']) && !isset($file['name'])) {
-                $fileObjects[$fieldName] = $this->convertFiles($file);
-            } else {
-                $fileObjects[$fieldName] = new UploadedFile(
-                    $file['tmp_name'],
-                    $file['name'],
-                    $file['type'],
-                    $file['size'],
-                    $file['error']
-                );
+                $uploadedFiles[$fieldName] = $this->createUploadedFile($file);
             }
         }
 
-        return $fileObjects;
+        return $uploadedFiles;
+    }
+
+    private function createUploadedFile(array $file): UploadedFile
+    {
+        return new UploadedFile(
+            $file['tmp_name'],
+            $file['name'],
+            $file['type'],
+            $file['size'],
+            $file['error']
+        );
     }
 }
