@@ -38,7 +38,7 @@ class TestAppCest
 
         // Check body.
         $I->assertSame('', $response['body'], 'Request body is not identical.');
-        $I->assertSame([], $response['parsed_body'], 'Parsed request body is not identical.');
+        $I->assertNull($response['parsed_body'], 'Parsed request body is not identical.');
 
         // Check server parameters.
         $I->assertSame(
@@ -60,13 +60,10 @@ class TestAppCest
         // Check headers.
         $I->assertSame(
             [
-                'host'            => ['localhost'],
-                'accept'          => ['text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'],
-                'accept-language' => ['en-US,en;q=0.8'],
-                'accept-charset'  => ['ISO-8859-1,utf-8;q=0.7,*;q=0.3'],
-                'user-agent'      => ['Symfony BrowserKit'],
-                'custom'          => ['header'],
-                'cookie'          => ['name=value; name2=value2; name3=value3'],
+                'User-Agent' => ['Symfony BrowserKit'],
+                'Custom'     => ['header'],
+                'Cookie'     => ['name=value; name2=value2; name3=value3'],
+                'Host'       => ['localhost'],
             ],
             $response['headers'],
             'Header parameters are not identical.'
@@ -139,13 +136,10 @@ class TestAppCest
         // Check headers.
         $I->assertSame(
             [
-                'host'            => ['localhost'],
-                'accept'          => ['text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'],
-                'accept-language' => ['en-US,en;q=0.8'],
-                'accept-charset'  => ['ISO-8859-1,utf-8;q=0.7,*;q=0.3'],
-                'user-agent'      => ['Symfony BrowserKit'],
-                'content-type'    => ['multipart/form-data'],
-                'cookie'          => ['name=value; name2=value2; name3=value3'],
+                'User-Agent'   => ['Symfony BrowserKit'],
+                'Content-Type' => ['multipart/form-data'],
+                'Cookie'       => ['name=value; name2=value2; name3=value3'],
+                'Host'         => ['localhost'],
             ],
             $response['headers'],
             'Header parameters are not identical.'
@@ -218,13 +212,10 @@ class TestAppCest
         // Check headers.
         $I->assertSame(
             [
-                'host'            => ['localhost'],
-                'accept'          => ['text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'],
-                'accept-language' => ['en-US,en;q=0.8'],
-                'accept-charset'  => ['ISO-8859-1,utf-8;q=0.7,*;q=0.3'],
-                'user-agent'      => ['Symfony BrowserKit'],
-                'content-type'    => ['application/json'],
-                'cookie'          => ['name=value; name2=value2; name3=value3'],
+                'User-Agent'   => ['Symfony BrowserKit'],
+                'Content-Type' => ['application/json'],
+                'Cookie'       => ['name=value; name2=value2; name3=value3'],
+                'Host'         => ['localhost'],
             ],
             $response['headers'],
             'Header parameters are not identical.'

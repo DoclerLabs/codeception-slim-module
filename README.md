@@ -3,7 +3,7 @@
 [![Build Status](https://img.shields.io/github/workflow/status/DoclerLabs/codeception-slim-module/CI?label=build&style=flat-square)](https://github.com/DoclerLabs/codeception-slim-module/actions?query=workflow%3ACI)
 [![PHPStan Level](https://img.shields.io/badge/PHPStan-level%208-brightgreen.svg?style=flat-square)](https://img.shields.io/badge/PHPStan-level%208-brightgreen.svg)
 
-This module allows you to run functional tests inside [Slim 3 Microframework](http://www.slimframework.com/docs/v3/) without HTTP calls,
+This module allows you to run functional tests inside [Slim 4 Microframework](http://www.slimframework.com/docs/v4/) without HTTP calls,
 so tests will be much faster and debug could be easier.
 
 Inspiration comes from [herloct/codeception-slim-module](https://github.com/herloct/codeception-slim-module) library.
@@ -12,7 +12,8 @@ Inspiration comes from [herloct/codeception-slim-module](https://github.com/herl
 
 ### Minimal requirements
 - php: `^7.2`
-- slim/slim: `^3.1`
+- slim/psr7: `^1.1`
+- slim/slim: `^4.2`
 - codeception/codeception: `^4.0`
 
 If you don't know Codeception, please check [Quickstart Guide](https://codeception.com/quickstart) first.
@@ -22,6 +23,12 @@ you can add codeception-slim-module with a single composer command.
 
 ```shell
 composer require --dev docler-labs/codeception-slim-module
+```
+
+If you use Slim v3, please use the previous version from library:
+
+```shell
+composer require --dev docler-labs/codeception-slim-module "^1.0"
 ```
 
 ### Configuration
@@ -42,9 +49,9 @@ Here is the minimum `application.php` content:
 ```php
 require __DIR__ . '/vendor/autoload.php';
 
-use Slim\App;
+use Slim\Factory\AppFactory;
 
-$app = new App();
+$app = AppFactory::create();
 
 // Add routes and middlewares here.
 

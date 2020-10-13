@@ -12,7 +12,8 @@
         "php": "^7.2",
         "codeception/codeception": "^4.0",
         "codeception/lib-innerbrowser": "^1.0",
-        "slim/slim": "^3.1"
+        "slim/psr7": "^1.1",
+        "slim/slim": "^4.2"
     },
     "require-dev": {
         "ext-json": "*",

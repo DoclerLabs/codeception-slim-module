@@ -5,22 +5,18 @@ declare(strict_types=1);
 namespace DoclerLabs\CodeceptionSlimModule\Lib\Connector;
 
 use Psr\Http\Message\UploadedFileInterface;
-use RuntimeException;
 use Slim\App;
-use Slim\Http\Cookies;
-use Slim\Http\Environment;
-use Slim\Http\Headers;
-use Slim\Http\Request;
-use Slim\Http\RequestBody;
-use Slim\Http\Response;
-use Slim\Http\Stream;
-use Slim\Http\UploadedFile;
-use Slim\Http\Uri;
+use Slim\Psr7\Cookies;
+use Slim\Psr7\Factory\StreamFactory;
+use Slim\Psr7\Factory\UriFactory;
+use Slim\Psr7\Headers;
+use Slim\Psr7\Request;
+use Slim\Psr7\UploadedFile;
 use Symfony\Component\BrowserKit\AbstractBrowser;
 use Symfony\Component\BrowserKit\Request as BrowserKitRequest;
 use Symfony\Component\BrowserKit\Response as BrowserKitResponse;
 
-class Slim extends AbstractBrowser
+class SlimPsr7 extends AbstractBrowser
 {
     /** @var App */
     private $app;
@@ -37,17 +33,8 @@ class Slim extends AbstractBrowser
      */
     protected function doRequest($request): BrowserKitResponse
     {
-        $slimRequest = $this->convertRequest($request);
-
-        $stream = fopen('php://temp', 'wb+');
-        if ($stream === false) {
-            throw new RuntimeException('Could not open `php://temp` stream.');
-        }
-
-        $headers      = new Headers(['Content-Type' => 'text/html; charset=UTF-8']);
-        $body         = new Stream($stream);
-        $slimResponse = new Response(200, $headers, $body);
-        $slimResponse = $this->app->process($slimRequest, $slimResponse);
+        $slimRequest  = $this->convertRequest($request);
+        $slimResponse = $this->app->handle($slimRequest);
 
         return new BrowserKitResponse(
             (string)$slimResponse->getBody(),
@@ -58,33 +45,20 @@ class Slim extends AbstractBrowser
 
     private function convertRequest(BrowserKitRequest $request): Request
     {
-        $environment  = Environment::mock($request->getServer());
-        $uri          = Uri::createFromString($request->getUri());
-        $headers      = Headers::createFromEnvironment($environment);
-        $cookieHeader = $headers->get('Cookie', []);
-        $cookies      = Cookies::parseHeader($cookieHeader[0] ?? '');
+        $server  = $request->getServer();
+        $method  = $request->getMethod();
+        $content = (string)$request->getContent();
 
-        $slimRequest = Request::createFromEnvironment($environment);
-        $slimRequest = $slimRequest
-            ->withMethod($request->getMethod())
-            ->withUri($uri)
-            ->withUploadedFiles($this->convertFiles($request->getFiles()))
-            ->withCookieParams($cookies);
+        $uri           = (new UriFactory())->createUri($request->getUri());
+        $headers       = $this->convertHeaders($server);
+        $cookies       = Cookies::parseHeader($headers->getHeader('Cookie', []));
+        $body          = (new StreamFactory())->createStream($content);
+        $uploadedFiles = $this->convertFiles($request->getFiles());
 
-        foreach ($headers->keys() as $key) {
-            $slimRequest = $slimRequest->withHeader($key, $headers->get($key));
-        }
-
-        $requestContent = $request->getContent();
-        if ($requestContent !== null) {
-            $body = new RequestBody();
-            $body->write($requestContent);
-
-            $slimRequest = $slimRequest->withBody($body);
-        }
+        $slimRequest = new Request($method, $uri, $headers, $cookies, $server, $body, $uploadedFiles);
 
         $parsed = [];
-        if ($request->getMethod() !== 'GET') {
+        if ($method !== 'GET') {
             $parsed = $request->getParameters();
         }
 
@@ -94,6 +68,27 @@ class Slim extends AbstractBrowser
         }
 
         return $slimRequest;
+    }
+
+    private function convertHeaders(array $server): Headers
+    {
+        $headers = [];
+
+        $contentHeaders = ['Content-Length' => true, 'Content-Md5' => true, 'Content-Type' => true];
+        foreach ($server as $header => $vale) {
+            $header = html_entity_decode(
+                implode('-', array_map('ucfirst', explode('-', strtolower(str_replace('_', '-', $header))))),
+                ENT_NOQUOTES
+            );
+
+            if (strpos($header, 'Http-') === 0) {
+                $headers[substr($header, 5)] = $vale;
+            } elseif (isset($contentHeaders[$header])) {
+                $headers[$header] = $vale;
+            }
+        }
+
+        return new Headers($headers, $server);
     }
 
     /**

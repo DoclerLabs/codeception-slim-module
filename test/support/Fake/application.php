@@ -5,15 +5,15 @@ declare(strict_types=1);
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
-use Slim\App;
+use Slim\Factory\AppFactory;
 
 require_once __DIR__ . '/../../../vendor/autoload.php';
 
-$app = new App();
-
+$app = AppFactory::create();
+$app->addBodyParsingMiddleware();
 $app->any(
     '/hello/{firstname}/{lastname}',
-    function (ServerRequestInterface $request, ResponseInterface $response) {
+    static function (ServerRequestInterface $request, ResponseInterface $response) {
         $response->getBody()->write(
             json_encode(
                 [

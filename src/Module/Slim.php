@@ -8,7 +8,7 @@ use Codeception\Configuration;
 use Codeception\Exception\ModuleConfigException;
 use Codeception\Lib\Framework;
 use Codeception\TestInterface;
-use DoclerLabs\CodeceptionSlimModule\Lib\Connector\Slim as SlimConnector;
+use DoclerLabs\CodeceptionSlimModule\Lib\Connector\SlimPsr7;
 use Slim\App;
 
 /**
@@ -16,7 +16,7 @@ use Slim\App;
  *
  * ## Configuration
  *
- * ### Slim 3.x
+ * ### Slim 4.x
  *
  * * application: 'app/bootstrap.php' - relative path to file which bootstrap and returns your `Slim\App` instance.
  *
@@ -74,7 +74,7 @@ class Slim extends Framework
     {
         $this->app = require $this->applicationPath;
 
-        $this->client = new SlimConnector();
+        $this->client = new SlimPsr7();
         $this->client->setApp($this->app);
 
         parent::_before($test);
