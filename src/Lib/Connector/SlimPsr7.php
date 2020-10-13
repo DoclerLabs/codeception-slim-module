@@ -16,7 +16,7 @@ use Symfony\Component\BrowserKit\AbstractBrowser;
 use Symfony\Component\BrowserKit\Request as BrowserKitRequest;
 use Symfony\Component\BrowserKit\Response as BrowserKitResponse;
 
-class SlimPsr7 extends AbstractBrowser
+class SlimPsr7 extends AbstractBrowser implements SlimConnectorInterface
 {
     /** @var App */
     private $app;

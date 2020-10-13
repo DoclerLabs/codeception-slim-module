@@ -23,11 +23,7 @@ class TestAppCest
         $I->assertSame('GET', $response['method'], 'Method is not identical.');
 
         // Check uri.
-        $I->assertSame(
-            'http://localhost/hello/John/Doe?foo=bar',
-            $response['uri'],
-            'Uri is not identical.'
-        );
+        $I->assertSame('http://localhost/hello/John/Doe?foo=bar', $response['uri'], 'Uri is not identical.');
 
         // Check attributes.
         $I->assertSame('John', $response['attributes']['firstname'], 'Firstname attribute is not identical.');
@@ -41,21 +37,9 @@ class TestAppCest
         $I->assertNull($response['parsed_body'], 'Parsed request body is not identical.');
 
         // Check server parameters.
-        $I->assertSame(
-            'server',
-            $response['server_params']['custom'],
-            'Custom server parameter is not identical.'
-        );
-        $I->assertSame(
-            'header',
-            $response['server_params']['HTTP_CUSTOM'],
-            'HTTP_CUSTOM server parameter is not identical.'
-        );
-        $I->assertSame(
-            'localhost',
-            $response['server_params']['HTTP_HOST'],
-            'HTTP_HOST server parameter is not identical.'
-        );
+        $I->assertSame('server', $response['server_params']['custom'], 'Custom server parameter is not identical.');
+        $I->assertSame('header', $response['server_params']['HTTP_CUSTOM'], 'HTTP_CUSTOM server parameter is not identical.');
+        $I->assertSame('localhost', $response['server_params']['HTTP_HOST'], 'HTTP_HOST server parameter is not identical.');
 
         // Check headers.
         $I->assertSame(
@@ -99,11 +83,7 @@ class TestAppCest
         $I->assertSame('POST', $response['method'], 'Method is not identical.');
 
         // Check uri.
-        $I->assertSame(
-            'http://localhost/hello/John/Doe?query=value',
-            $response['uri'],
-            'Uri is not identical.'
-        );
+        $I->assertSame('http://localhost/hello/John/Doe?query=value', $response['uri'], 'Uri is not identical.');
 
         // Check attributes.
         $I->assertSame('John', $response['attributes']['firstname'], 'Firstname attribute is not identical.');
@@ -117,21 +97,9 @@ class TestAppCest
         $I->assertSame(['foo' => 'bar'], $response['parsed_body'], 'Parsed request body is not identical.');
 
         // Check server parameters.
-        $I->assertSame(
-            'server',
-            $response['server_params']['custom'],
-            'Custom server parameter is not identical.'
-        );
-        $I->assertSame(
-            'multipart/form-data',
-            $response['server_params']['HTTP_CONTENT_TYPE'],
-            'HTTP_CONTENT_TYPE server parameter is not identical.'
-        );
-        $I->assertSame(
-            'localhost',
-            $response['server_params']['HTTP_HOST'],
-            'HTTP_HOST server parameter is not identical.'
-        );
+        $I->assertSame('server', $response['server_params']['custom'], 'Custom server parameter is not identical.');
+        $I->assertSame('multipart/form-data', $response['server_params']['HTTP_CONTENT_TYPE'], 'HTTP_CONTENT_TYPE server parameter is not identical.');
+        $I->assertSame('localhost', $response['server_params']['HTTP_HOST'], 'HTTP_HOST server parameter is not identical.');
 
         // Check headers.
         $I->assertSame(
@@ -175,11 +143,7 @@ class TestAppCest
         $I->assertSame('POST', $response['method'], 'Method is not identical.');
 
         // Check uri.
-        $I->assertSame(
-            'http://localhost/hello/John/Doe?query=value',
-            $response['uri'],
-            'Uri is not identical.'
-        );
+        $I->assertSame('http://localhost/hello/John/Doe?query=value', $response['uri'], 'Uri is not identical.');
 
         // Check attributes.
         $I->assertSame('John', $response['attributes']['firstname'], 'Firstname attribute is not identical.');
@@ -193,21 +157,9 @@ class TestAppCest
         $I->assertSame(['foo' => 'bar'], $response['parsed_body'], 'Parsed request body is not identical.');
 
         // Check server parameters.
-        $I->assertSame(
-            'server',
-            $response['server_params']['custom'],
-            'Custom server parameter is not identical.'
-        );
-        $I->assertSame(
-            'application/json',
-            $response['server_params']['HTTP_CONTENT_TYPE'],
-            'HTTP_CONTENT_TYPE server parameter is not identical.'
-        );
-        $I->assertSame(
-            'localhost',
-            $response['server_params']['HTTP_HOST'],
-            'HTTP_HOST server parameter is not identical.'
-        );
+        $I->assertSame('server', $response['server_params']['custom'], 'Custom server parameter is not identical.');
+        $I->assertSame('application/json', $response['server_params']['HTTP_CONTENT_TYPE'], 'HTTP_CONTENT_TYPE server parameter is not identical.');
+        $I->assertSame('localhost', $response['server_params']['HTTP_HOST'], 'HTTP_HOST server parameter is not identical.');
 
         // Check headers.
         $I->assertSame(
