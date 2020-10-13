@@ -1,0 +1,11 @@
+# Files
+.php_cs
+.php_cs.cache
+/composer.lock
+/phpstan.neon
+!/test/output/.gitkeep
+
+# Directories
+/test/output/*
+/test/support/_generated
+/vendor

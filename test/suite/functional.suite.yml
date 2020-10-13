@@ -1,0 +1,10 @@
+actor: FunctionalTester
+modules:
+  enabled:
+    - Asserts:
+    - REST:
+        depends: DoclerLabs\CodeceptionSlimModule\Module\Slim
+
+  config:
+    DoclerLabs\CodeceptionSlimModule\Module\Slim:
+      application: test/support/Fake/application.php
