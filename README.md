@@ -62,7 +62,7 @@ return $app;
 ### Connectors
 
 Slim v4 comes with full PSR7 compatibility, so you are able to use any PSR7 implementation in your application.
-This module comes with `slim/psr7` connector by default. If you use different implementation, you need to implement you own connector and feel free to contribute.
+This module comes with `slim/psr7` connector by default. If you use different implementation, you need to implement your own connector and feel free to contribute.
 
 **Custom connector example**
 
