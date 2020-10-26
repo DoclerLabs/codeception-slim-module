@@ -105,7 +105,7 @@ class Slim extends Framework
 
     public function _before(TestInterface $test): void
     {
-        /** @noinspection PhpIncludeInspection */
+        /* @noinspection PhpIncludeInspection */
         $this->app = require $this->applicationPath;
 
         // Check if app instance is ready.
