@@ -59,6 +59,7 @@ class Slim extends Framework
     /** @var App */
     public $app;
 
+    /** @var string[] */
     protected $config = [
         'connector' => SlimPsr7::class,
     ];
