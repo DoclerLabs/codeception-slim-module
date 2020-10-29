@@ -61,10 +61,10 @@ class Slim extends Framework
     public function _initialize(): void
     {
         $applicationPath = Configuration::projectDir() . $this->config['application'];
-        if (!file_exists($applicationPath)) {
+        if (!is_readable($applicationPath)) {
             throw new ModuleConfigException(
                 static::class,
-                "Application file doesn't exist.\nPlease, check path for php file: `$applicationPath`"
+                "Application file does not exist or is not readable.\nPlease, check path for php file: `$applicationPath`"
             );
         }
 
