@@ -79,8 +79,6 @@ class SlimPsr7 extends AbstractBrowser
      */
     private function convertToHeaders(array $serverVariables): Headers
     {
-        $contentHeadersWithoutHttpPrefix = ['Content-Length' => true, 'Content-Md5' => true, 'Content-Type' => true];
-
         $headers = [];
         foreach ($serverVariables as $key => $value) {
             // Replace underscores to dashes.
@@ -92,12 +90,10 @@ class SlimPsr7 extends AbstractBrowser
             // Decode if there are html entities in the header name.
             $headerName = html_entity_decode($headerName, ENT_NOQUOTES);
 
-            // Collect headers from server variables and cut "Http-" prefix. Also collect content headers without http prefix.
+            // Collect headers from server variables and cut "Http-" prefix.
             if (strpos($headerName, 'Http-') === 0) {
                 $headerName = substr($headerName, 5);
 
-                $headers[$headerName] = $value;
-            } elseif (isset($contentHeadersWithoutHttpPrefix[$headerName])) {
                 $headers[$headerName] = $value;
             }
         }
