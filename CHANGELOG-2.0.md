@@ -7,6 +7,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [2.0.0] - 2020-11-27
 ### Added
 - Slim v4 support.
-- Added `connector` configuration to be able to implement your own PSR7 compatible slim browser. See details in [README.md](README.md)
 ### Removed
 - Drop Slim v3 support. If you use Slim v3, please use the previous version from library.

@@ -59,68 +59,6 @@ $app = AppFactory::create();
 return $app;
 ```
 
-### Connectors
-
-Slim v4 comes with full PSR7 compatibility, so you are able to use any PSR7 implementation in your application.
-This module comes with `slim/psr7` connector by default. If you use different implementation, you need to implement your own connector and feel free to contribute.
-
-**Custom connector example**
-
-```php
-
-namespace Vendor\Package\SlimConnector;
-
-use DoclerLabs\CodeceptionSlimModule\Lib\Connector\SlimConnectorInterface;
-use Slim\App;
-use Symfony\Component\BrowserKit\AbstractBrowser;
-use Symfony\Component\BrowserKit\Request as BrowserKitRequest;
-use Symfony\Component\BrowserKit\Response as BrowserKitResponse;
-
-class MyCustomConnector extends AbstractBrowser implements SlimConnectorInterface
-{
-    /** @var App */
-    private $app;
-
-    public function setApp(App $app): void
-    {
-        $this->app = $app;
-    }
-
-    /**
-     * @param BrowserKitRequest $request An origin request instance.
-     *
-     * @return BrowserKitResponse An origin response instance.
-     */
-    protected function doRequest($request): BrowserKitResponse
-    {
-        $slimRequest = // ... convert BrowserKitRequest to your Slim Request object.
-
-        $slimResponse = $this->app->handle($slimRequest);
-
-        return new BrowserKitResponse(
-            (string)$slimResponse->getBody(),
-            $slimResponse->getStatusCode(),
-            $slimResponse->getHeaders()
-        );
-    }
-}
-```
-
-**Inject custom connector example (`test/suite/functional.suite.yml`)**
-```yaml
-modules:
-  enabled:
-    - REST:
-        depends: DoclerLabs\CodeceptionSlimModule\Module\Slim
-
-  config:
-    DoclerLabs\CodeceptionSlimModule\Module\Slim:
-      application: path/to/application.php
-      connector: Vendor\Package\SlimConnector/MyCustomConnector
-```
-
-You can inject a custom connector with `connector` property.
-
 ## Testing your API endpoints
 
 ```php

@@ -16,7 +16,7 @@ use Symfony\Component\BrowserKit\AbstractBrowser;
 use Symfony\Component\BrowserKit\Request as BrowserKitRequest;
 use Symfony\Component\BrowserKit\Response as BrowserKitResponse;
 
-class SlimPsr7 extends AbstractBrowser implements SlimConnectorInterface
+class SlimPsr7 extends AbstractBrowser
 {
     /** @var App */
     private $app;
@@ -50,7 +50,7 @@ class SlimPsr7 extends AbstractBrowser implements SlimConnectorInterface
         $content = (string)$request->getContent();
 
         $uri           = (new UriFactory())->createUri($request->getUri());
-        $headers       = $this->convertHeaders($server);
+        $headers       = $this->convertToHeaders($server);
         $cookies       = Cookies::parseHeader($headers->getHeader('Cookie', []));
         $body          = (new StreamFactory())->createStream($content);
         $uploadedFiles = $this->convertFiles($request->getFiles());
@@ -70,25 +70,39 @@ class SlimPsr7 extends AbstractBrowser implements SlimConnectorInterface
         return $slimRequest;
     }
 
-    private function convertHeaders(array $server): Headers
+    /**
+     * Collect headers from server variables and transform to proper header names.
+     *
+     * @param array $serverVariables List of server variables.
+     *
+     * @return Headers
+     */
+    private function convertToHeaders(array $serverVariables): Headers
     {
+        $contentHeadersWithoutHttpPrefix = ['Content-Length' => true, 'Content-Md5' => true, 'Content-Type' => true];
+
         $headers = [];
+        foreach ($serverVariables as $key => $value) {
+            // Replace underscores to dashes.
+            $headerName = str_replace('_', '-', $key);
 
-        $contentHeaders = ['Content-Length' => true, 'Content-Md5' => true, 'Content-Type' => true];
-        foreach ($server as $header => $vale) {
-            $header = html_entity_decode(
-                implode('-', array_map('ucfirst', explode('-', strtolower(str_replace('_', '-', $header))))),
-                ENT_NOQUOTES
-            );
+            // Transform the first characters to uppercase of each word, other characters are lowercased.
+            $headerName = implode('-', array_map('ucfirst', explode('-', strtolower($headerName))));
 
-            if (strpos($header, 'Http-') === 0) {
-                $headers[substr($header, 5)] = $vale;
-            } elseif (isset($contentHeaders[$header])) {
-                $headers[$header] = $vale;
+            // Decode if there are html entities in the header name.
+            $headerName = html_entity_decode($headerName, ENT_NOQUOTES);
+
+            // Collect headers from server variables and cut "Http-" prefix. Also collect content headers without http prefix.
+            if (strpos($headerName, 'Http-') === 0) {
+                $headerName = substr($headerName, 5);
+
+                $headers[$headerName] = $value;
+            } elseif (isset($contentHeadersWithoutHttpPrefix[$headerName])) {
+                $headers[$headerName] = $value;
             }
         }
 
-        return new Headers($headers, $server);
+        return new Headers($headers, $serverVariables);
     }
 
     /**
