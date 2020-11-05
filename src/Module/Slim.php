@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace DoclerLabs\CodeceptionSlimModule\Module;
 
 use Codeception\Configuration;
+use Codeception\Exception\ConfigurationException;
 use Codeception\Exception\ModuleConfigException;
 use Codeception\Lib\Framework;
 use Codeception\TestInterface;
-use DoclerLabs\CodeceptionSlimModule\Lib\Connector\Slim as SlimConnector;
+use DoclerLabs\CodeceptionSlimModule\Lib\Connector\SlimPsr7;
 use Slim\App;
 
 /**
@@ -16,16 +17,16 @@ use Slim\App;
  *
  * ## Configuration
  *
- * ### Slim 3.x
+ * ### Slim 4.x
  *
- * * application: 'app/bootstrap.php' - relative path to file which bootstrap and returns your `Slim\App` instance.
+ * * application - Relative path to file which bootstrap and returns your `Slim\App` instance.
  *
  * #### Example (`test/suite/functional.suite.yml`)
  * ```yaml
  * modules:
- *   enabled:
- *     - DoclerLabs\CodeceptionSlimModule\Module\Slim:
- *         application: 'app/bootstrap.php'
+ *   config:
+ *     DoclerLabs\CodeceptionSlimModule\Module\Slim:
+ *       application: 'app/bootstrap.php'
  * ```
  *
  * ## Public Properties
@@ -38,10 +39,12 @@ use Slim\App;
  * actor: FunctionalTester
  * modules:
  *   enabled:
- *     - DoclerLabs\CodeceptionSlimModule\Module\Slim:
- *         application: 'app/bootstrap.php'
  *     - REST:
  *         depends: DoclerLabs\CodeceptionSlimModule\Module\Slim
+ *
+ *   config:
+ *     DoclerLabs\CodeceptionSlimModule\Module\Slim:
+ *       application: 'app/bootstrap.php'
  * ```
  */
 class Slim extends Framework
@@ -57,25 +60,38 @@ class Slim extends Framework
 
     public function _initialize(): void
     {
-        $this->applicationPath = Configuration::projectDir() . $this->config['application'];
-
-        if (!file_exists($this->applicationPath)) {
+        $applicationPath = Configuration::projectDir() . $this->config['application'];
+        if (!is_readable($applicationPath)) {
             throw new ModuleConfigException(
                 static::class,
-                "\nApplication file doesn't exist.\n"
-                . 'Please, check path for php file: ' . $this->applicationPath
+                "Application file does not exist or is not readable.\nPlease, check path for php file: `$applicationPath`"
             );
         }
+
+        $this->applicationPath = $applicationPath;
 
         parent::_initialize();
     }
 
     public function _before(TestInterface $test): void
     {
+        /* @noinspection PhpIncludeInspection */
         $this->app = require $this->applicationPath;
 
-        $this->client = new SlimConnector();
-        $this->client->setApp($this->app);
+        // Check if app instance is ready.
+        if (!$this->app instanceof App) {
+            throw new ConfigurationException(
+                sprintf(
+                    "Unable to bootstrap slim application.\n  Application file must return with `%s` instance.",
+                    App::class
+                )
+            );
+        }
+
+        $connector = new SlimPsr7();
+        $connector->setApp($this->app);
+
+        $this->client = $connector;
 
         parent::_before($test);
     }
