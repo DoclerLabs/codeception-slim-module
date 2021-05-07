@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: PHPStan
-        uses: docker://oskarstark/phpstan-ga:0.12.41
+        uses: docker://oskarstark/phpstan-ga:0.12.85
         env:
           REQUIRE_DEV: true
         with:
@@ -27,6 +27,6 @@ jobs:
         uses: actions/checkout@v2
 
       - name: PHP-CS-Fixer
-        uses: docker://oskarstark/php-cs-fixer-ga:2.16.4
+        uses: docker://oskarstark/php-cs-fixer-ga:2.19.0
         with:
           args: --dry-run --diff-format udiff
