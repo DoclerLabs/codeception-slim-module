@@ -11,7 +11,6 @@ use Slim\Http\Cookies;
 use Slim\Http\Environment;
 use Slim\Http\Headers;
 use Slim\Http\Request;
-use Slim\Http\RequestBody;
 use Slim\Http\Response;
 use Slim\Http\Stream;
 use Slim\Http\UploadedFile;
@@ -37,15 +36,9 @@ class Slim extends AbstractBrowser
      */
     protected function doRequest($request): BrowserKitResponse
     {
-        $slimRequest = $this->convertRequest($request);
-
-        $stream = fopen('php://temp', 'wb+');
-        if ($stream === false) {
-            throw new RuntimeException('Could not open `php://temp` stream.');
-        }
-
+        $slimRequest  = $this->convertRequest($request);
         $headers      = new Headers(['Content-Type' => 'text/html; charset=UTF-8']);
-        $body         = new Stream($stream);
+        $body         = $this->createStream();
         $slimResponse = new Response(200, $headers, $body);
         $slimResponse = $this->app->process($slimRequest, $slimResponse);
 
@@ -77,7 +70,7 @@ class Slim extends AbstractBrowser
 
         $requestContent = $request->getContent();
         if ($requestContent !== null) {
-            $body = new RequestBody();
+            $body = $this->createStream();
             $body->write($requestContent);
 
             $slimRequest = $slimRequest->withBody($body);
@@ -127,5 +120,15 @@ class Slim extends AbstractBrowser
             $file['size'],
             $file['error']
         );
+    }
+
+    private function createStream(): Stream
+    {
+        $stream = fopen('php://temp', 'wb+');
+        if ($stream === false) {
+            throw new RuntimeException('Could not open `php://temp` stream.');
+        }
+
+        return new Stream($stream);
     }
 }
