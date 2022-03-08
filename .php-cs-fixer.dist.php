@@ -1,8 +1,13 @@
 <?php
 
-return PhpCsFixer\Config::create()
-    ->setRiskyAllowed(true)
-    ->setRules(
+$finder = PhpCsFixer\Finder::create()
+    ->in(__DIR__.'/src')
+    ->in(__DIR__.'/test')
+    ->exclude('support/_generated')
+    ->name('*.php');
+
+$config = new PhpCsFixer\Config();
+return $config->setRules(
         [
             '@PSR2'                                     => true,
             'array_syntax'                              => ['syntax' => 'short'],
@@ -16,13 +21,17 @@ return PhpCsFixer\Config::create()
                 'allow_single_line_closure' => true,
             ],
             'class_attributes_separation'               => [
-                'elements' => ['const', 'property', 'method'],
+                'elements' => ['const' => 'one', 'method' => 'one', 'property' => 'one', 'trait_import' => 'none'],
             ],
             'declare_strict_types'                      => true,
             'no_alternative_syntax'                     => true,
             'no_leading_import_slash'                   => true,
-            'no_multiline_whitespace_before_semicolons' => true,
-            'no_short_echo_tag'                         => true,
+            'multiline_whitespace_before_semicolons'    => [
+                'strategy' => 'no_multi_line'
+            ],
+            'echo_tag_syntax'                           => [
+                'format' => 'long'
+            ],
             'no_spaces_inside_parenthesis'              => true,
             'no_useless_else'                           => true,
             'not_operator_with_space'                   => false,
@@ -48,7 +57,9 @@ return PhpCsFixer\Config::create()
             ],
             'single_quote'                              => true,
             'ternary_operator_spaces'                   => true,
-            'trailing_comma_in_multiline_array'         => true,
+            'trailing_comma_in_multiline'               => [
+                'elements' => ['arrays']
+            ],
             'trim_array_spaces'                         => true,
             'single_line_after_imports'                 => true,
             'unary_operator_spaces'                     => true,
@@ -56,12 +67,7 @@ return PhpCsFixer\Config::create()
             'yoda_style'                                => false,
         ]
     )
+    ->setRiskyAllowed(true)
     ->setIndent('    ')
     ->setUsingCache(false)
-    ->setFinder(
-        PhpCsFixer\Finder::create()
-            ->in(__DIR__.'/src')
-            ->in(__DIR__.'/test')
-            ->exclude('support/_generated')
-            ->name('*.php')
-    );
+    ->setFinder($finder);
