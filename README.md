@@ -11,8 +11,8 @@ Inspiration comes from [herloct/codeception-slim-module](https://github.com/herl
 ## Install
 
 ### Minimal requirements
-- php: `^7.2`
-- slim/slim: `^4.2`
+- php: `^8.0`
+- slim/slim: `^4.7`
 - codeception/codeception: `^4.0`
 
 If you don't know Codeception, please check [Quickstart Guide](https://codeception.com/quickstart) first.
@@ -22,6 +22,12 @@ you can add codeception-slim-module with a single composer command.
 
 ```shell
 composer require --dev docler-labs/codeception-slim-module
+```
+
+For PHP 7 support, please use `docler-labs/codeception-slim-module:^2.0` version
+
+```shell
+composer require --dev docler-labs/codeception-slim-module "^2.0"
 ```
 
 If you use Slim v3, please use the previous version from library:
