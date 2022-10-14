@@ -53,7 +53,7 @@ class Slim extends Framework
     public $app;
 
     /** @var array */
-    protected $requiredFields = ['application'];
+    protected array $requiredFields = ['application'];
 
     /** @var string */
     private $applicationPath;
