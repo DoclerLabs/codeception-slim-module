@@ -13,7 +13,7 @@ Inspiration comes from [herloct/codeception-slim-module](https://github.com/herl
 ### Minimal requirements
 - php: `^8.0`
 - slim/slim: `^4.7`
-- codeception/codeception: `^4.0`
+- codeception/codeception: `^5.0`
 
 If you don't know Codeception, please check [Quickstart Guide](https://codeception.com/quickstart) first.
 
