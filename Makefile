@@ -4,6 +4,7 @@ help:
 	@echo "  coverage                to perform tests with code coverage."
 	@echo "  static                  to run phpstan and php-cs-fixer check."
 	@echo "  static-phpstan          to run phpstan."
+	@echo "  static-psalm            to run psalm."
 	@echo "  static-cs-check         to run php-cs-fixer."
 	@echo "  static-cs-fix           to run php-cs-fixer, writing the changes."
 
@@ -15,12 +16,17 @@ coverage:
 	vendor/bin/codecept build
 	vendor/bin/codecept run --coverage --coverage-xml --coverage-html
 
-static: static-phpstan static-cs-check
+static: static-phpstan static-psalm static-cs-check
 
 static-phpstan:
 	composer install
 	composer bin phpstan install
 	vendor/bin/phpstan analyze $(PHPSTAN_PARAMS)
+
+static-psalm:
+	composer install
+	composer bin psalm install
+	vendor/bin/psalm.phar $(PSALM_PARAMS)
 
 static-cs-fix:
 	composer install

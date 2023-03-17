@@ -48,3 +48,26 @@ jobs:
 
       - name: Execute PHP CS Fixer
         run: vendor/bin/php-cs-fixer fix --diff --dry-run
+
+  psalm:
+    name: Psalm
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          coverage: none
+
+      - name: Download dependencies
+        run: composer install --no-interaction --no-progress
+
+      - name: Download Psalm
+        run: composer bin psalm install --no-interaction --no-progress
+
+      - name: Execute Psalm
+        run: vendor/bin/psalm.phar --no-progress --output-format=github
