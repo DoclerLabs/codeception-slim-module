@@ -1,7 +1,7 @@
 # Files
 .php_cs
 .php_cs.cache
-/composer.lock
+composer.lock
 /phpstan.neon
 !/test/output/.gitkeep
 
@@ -9,3 +9,4 @@
 /test/output/*
 /test/support/_generated
 /vendor
+/vendor-bin/**/vendor/

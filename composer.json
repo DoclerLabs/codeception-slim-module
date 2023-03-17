@@ -17,6 +17,7 @@
     },
     "require-dev": {
         "ext-json": "*",
+        "bamarni/composer-bin-plugin": "^1.8",
         "codeception/module-asserts": "^3.0",
         "codeception/module-rest": "^3.0"
     },
@@ -32,6 +33,15 @@
         }
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "bamarni/composer-bin-plugin": true
+        }
+    },
+    "extra": {
+        "bamarni-bin": {
+            "bin-links": true,
+            "forward-command": false
+        }
     }
 }
