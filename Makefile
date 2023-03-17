@@ -1,6 +1,6 @@
 help:
 	@echo "Please use \`make <target>' where <target> is one of"
-	@echo "  test                    to perform tests."
+	@echo "  tests                   to perform tests."
 	@echo "  coverage                to perform tests with code coverage."
 	@echo "  static                  to run phpstan and php-cs-fixer check."
 	@echo "  static-phpstan          to run phpstan."
@@ -8,7 +8,7 @@ help:
 	@echo "  static-cs-check         to run php-cs-fixer."
 	@echo "  static-cs-fix           to run php-cs-fixer, writing the changes."
 
-test:
+tests:
 	vendor/bin/codecept build
 	vendor/bin/codecept run
 
