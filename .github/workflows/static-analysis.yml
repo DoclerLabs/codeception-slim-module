@@ -32,9 +32,19 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: PHP-CS-Fixer
-        uses: docker://oskarstark/php-cs-fixer-ga:3.4.0
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
         with:
-          args: --dry-run --diff
+          php-version: '8.0'
+          coverage: none
+
+      - name: Download dependencies
+        run: composer install --no-interaction --no-progress
+
+      - name: Download PHP CS Fixer
+        run: composer bin php-cs-fixer install --no-interaction --no-progress
+
+      - name: Execute PHP CS Fixer
+        run: vendor/bin/php-cs-fixer fix --diff --dry-run

@@ -23,7 +23,9 @@ static-phpstan:
 	vendor/bin/phpstan analyze $(PHPSTAN_PARAMS)
 
 static-cs-fix:
-	docker run --rm -it -v ${PWD}:/app -w /app oskarstark/php-cs-fixer-ga:2.19.0 --diff-format udiff $(CS_PARAMS)
+	composer install
+	composer bin php-cs-fixer install
+	vendor/bin/php-cs-fixer fix --diff $(CS_PARAMS)
 
 static-cs-check:
 	$(MAKE) static-cs-fix CS_PARAMS="--dry-run"
