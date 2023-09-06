@@ -46,14 +46,11 @@ use Slim\App;
  */
 class Slim extends Framework
 {
-    /** @var App */
-    public $app;
+    public App $app;
 
-    /** @var array */
-    protected $requiredFields = ['application'];
+    protected array $requiredFields = ['application'];
 
-    /** @var string */
-    private $applicationPath;
+    private string $applicationPath;
 
     public function _initialize(): void
     {

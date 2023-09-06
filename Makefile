@@ -21,7 +21,7 @@ coverage:
 static: static-phpstan static-cs-check
 
 static-phpstan:
-	docker run --rm -it -e REQUIRE_DEV=true -v ${PWD}:/app -w /app oskarstark/phpstan-ga:0.12.85 analyze $(PHPSTAN_PARAMS)
+	docker run --rm -it -e REQUIRE_DEV=true -v ${PWD}:/app -w /app oskarstark/phpstan-ga:1.8.0 analyze $(PHPSTAN_PARAMS)
 
 static-cs-fix:
 	docker run --rm -it -v ${PWD}:/app -w /app oskarstark/php-cs-fixer-ga:2.19.0 --diff-format udiff $(CS_PARAMS)
