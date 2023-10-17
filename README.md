@@ -11,7 +11,7 @@ Inspiration comes from [herloct/codeception-slim-module](https://github.com/herl
 ## Install
 
 ### Minimal requirements
-- php: `^7.2`
+- php: `^7.2 || ^8.0`
 - slim/slim: `^3.1`
 - codeception/codeception: `^4.0`
 

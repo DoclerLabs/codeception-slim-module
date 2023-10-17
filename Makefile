@@ -28,3 +28,15 @@ static-cs-fix:
 
 static-cs-check:
 	$(MAKE) static-cs-fix CS_PARAMS="--dry-run"
+
+DOCKER_RUN=docker run --rm -u $(shell id -u):$(shell id -g) -v $(shell pwd):/app -w /app
+
+local-ci:
+	$(DOCKER_RUN) -v ~/.composer:/tmp -v ~/.ssh:/root/.ssh composer:2 install
+	$(DOCKER_RUN) php:7.2-cli vendor/bin/codecept build
+	$(DOCKER_RUN) php:7.2-cli vendor/bin/codecept run
+	$(DOCKER_RUN) php:7.3-cli vendor/bin/codecept run
+	$(DOCKER_RUN) php:7.4-cli vendor/bin/codecept run
+	$(DOCKER_RUN) php:8.0-cli vendor/bin/codecept run
+	$(DOCKER_RUN) php:8.1-cli vendor/bin/codecept run
+	$(DOCKER_RUN) php:8.2-cli vendor/bin/codecept run
