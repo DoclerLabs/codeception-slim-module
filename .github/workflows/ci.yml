@@ -9,7 +9,7 @@ jobs:
     strategy:
       max-parallel: 10
       matrix:
-        php: [ '8.0', '8.1', '8.2' ]
+        php: [ '8.0', '8.1', '8.2', '8.3' ]
 
     steps:
       - name: Set up PHP
@@ -20,7 +20,7 @@ jobs:
           tools: composer:v2
 
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Download dependencies
         run: composer update --no-interaction --prefer-dist

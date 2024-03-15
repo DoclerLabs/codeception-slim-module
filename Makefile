@@ -47,3 +47,4 @@ local-ci:
 	$(DOCKER_RUN) php:8.0-cli vendor/bin/codecept run
 	$(DOCKER_RUN) php:8.1-cli vendor/bin/codecept run
 	$(DOCKER_RUN) php:8.2-cli vendor/bin/codecept run
+	$(DOCKER_RUN) php:8.3-cli vendor/bin/codecept run
