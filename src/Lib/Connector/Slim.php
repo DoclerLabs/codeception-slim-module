@@ -21,8 +21,7 @@ use Symfony\Component\BrowserKit\Response as BrowserKitResponse;
 
 class Slim extends AbstractBrowser
 {
-    /** @var App */
-    private $app;
+    private App $app;
 
     public function setApp(App $app): void
     {
