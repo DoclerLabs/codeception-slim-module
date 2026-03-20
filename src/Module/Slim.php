@@ -10,6 +10,7 @@ use Codeception\Exception\ModuleConfigException;
 use Codeception\Lib\Framework;
 use Codeception\TestInterface;
 use DoclerLabs\CodeceptionSlimModule\Lib\Connector\SlimPsr7;
+use Psr\Container\ContainerInterface;
 use Slim\App;
 
 /**
@@ -20,6 +21,7 @@ use Slim\App;
  * ### Slim 4.x
  *
  * * application - Relative path to file which bootstrap and returns your `Slim\App` instance.
+ * * headers - Default headers to be sent with every request (optional).
  *
  * #### Example (`test/suite/functional.suite.yml`)
  * ```yaml
@@ -27,6 +29,8 @@ use Slim\App;
  *   config:
  *     DoclerLabs\CodeceptionSlimModule\Module\Slim:
  *       application: 'app/bootstrap.php'
+ *       headers:
+ *         Content-Type: application/json
  * ```
  *
  * ## Public Properties
@@ -45,22 +49,26 @@ use Slim\App;
  *   config:
  *     DoclerLabs\CodeceptionSlimModule\Module\Slim:
  *       application: 'app/bootstrap.php'
+ *       headers:
+ *         Content-Type: application/json
  * ```
  */
 class Slim extends Framework
 {
-    /** @var App */
-    public $app;
+    /** @var App<ContainerInterface|null> */
+    public App $app;
 
-    /** @var array */
     protected array $requiredFields = ['application'];
 
-    /** @var string */
-    private $applicationPath;
+    protected array $config = ['headers' => []];
+
+    private string $applicationPath;
 
     public function _initialize(): void
     {
-        $applicationPath = Configuration::projectDir() . $this->config['application'];
+        /** @var string $configApplication */
+        $configApplication = $this->config['application'];
+        $applicationPath   = Configuration::projectDir() . $configApplication;
         if (!is_readable($applicationPath)) {
             throw new ModuleConfigException(
                 static::class,
@@ -75,11 +83,10 @@ class Slim extends Framework
 
     public function _before(TestInterface $test): void
     {
-        /* @noinspection PhpIncludeInspection */
-        $this->app = require $this->applicationPath;
+        $app = require $this->applicationPath;
 
         // Check if app instance is ready.
-        if (!$this->app instanceof App) {
+        if (!$app instanceof App) {
             throw new ConfigurationException(
                 sprintf(
                     "Unable to bootstrap slim application.\n  Application file must return with `%s` instance.",
@@ -88,10 +95,16 @@ class Slim extends Framework
             );
         }
 
+        $this->app = $app;
+
         $connector = new SlimPsr7();
         $connector->setApp($this->app);
 
         $this->client = $connector;
+
+        /** @var array<string, string> $headers */
+        $headers       = $this->config['headers'];
+        $this->headers = $headers;
 
         parent::_before($test);
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DoclerLabs\CodeceptionSlimModule\Lib\Connector;
 
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Slim\App;
 use Slim\Psr7\Cookies;
@@ -16,11 +17,15 @@ use Symfony\Component\BrowserKit\AbstractBrowser;
 use Symfony\Component\BrowserKit\Request as BrowserKitRequest;
 use Symfony\Component\BrowserKit\Response as BrowserKitResponse;
 
+/**
+ * @extends AbstractBrowser<BrowserKitRequest, BrowserKitResponse>
+ */
 class SlimPsr7 extends AbstractBrowser
 {
-    /** @var App */
-    private $app;
+    /** @var App<ContainerInterface|null> */
+    private App $app;
 
+    /** @param App<ContainerInterface|null> $app */
     public function setApp(App $app): void
     {
         $this->app = $app;
@@ -104,9 +109,6 @@ class SlimPsr7 extends AbstractBrowser
     /**
      * Convert uploaded file list to UploadedFile instances.
      *
-     * @param array $files List of uploaded file instances, that implements `Psr\Http\Message\UploadedFileInterface`,
-     *                     or meta data about uploaded file items from $_FILES, indexed with field name.
-     *
      * @return array<string, UploadedFileInterface>
      */
     private function convertFiles(array $files): array
@@ -114,23 +116,22 @@ class SlimPsr7 extends AbstractBrowser
         $uploadedFiles = [];
         foreach ($files as $fieldName => $file) {
             if ($file instanceof UploadedFileInterface) {
-                $uploadedFiles[$fieldName] = $file;
-            } elseif (!isset($file['tmp_name']) && !isset($file['name'])) {
-                $uploadedFiles[$fieldName] = $this->createUploadedFile($file);
+                $uploadedFiles[(string)$fieldName] = $file;
+            } elseif (
+                is_array($file)
+                && isset($file['tmp_name'], $file['name'])
+            ) {
+                /** @var array{tmp_name: string, name: string, type?: string|null, size?: int|null, error?: int} $file */
+                $uploadedFiles[(string)$fieldName] = new UploadedFile(
+                    $file['tmp_name'],
+                    $file['name'],
+                    $file['type']  ?? null,
+                    $file['size']  ?? null,
+                    $file['error'] ?? UPLOAD_ERR_OK
+                );
             }
         }
 
         return $uploadedFiles;
-    }
-
-    private function createUploadedFile(array $file): UploadedFile
-    {
-        return new UploadedFile(
-            $file['tmp_name'],
-            $file['name'],
-            $file['type'],
-            $file['size'],
-            $file['error']
-        );
     }
 }

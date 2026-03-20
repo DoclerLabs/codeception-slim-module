@@ -3,8 +3,12 @@ includes:
 
 parameters:
     level: max
-    checkMissingIterableValueType: false
+    ignoreErrors:
+        -
+            identifier: missingType.iterableValue
     paths:
         - src
     fileExtensions:
         - php
+    bootstrapFiles:
+        - vendor/autoload.php

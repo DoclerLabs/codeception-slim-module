@@ -8,3 +8,5 @@ modules:
   config:
     DoclerLabs\CodeceptionSlimModule\Module\Slim:
       application: test/support/Fake/application.php
+      headers:
+        X-Default-Header: default-value

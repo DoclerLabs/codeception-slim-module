@@ -29,7 +29,8 @@
     "autoload-dev": {
         "psr-4": {
             "DoclerLabs\\CodeceptionSlimModule\\Test\\": "test/support",
-            "DoclerLabs\\CodeceptionSlimModule\\Test\\Functional\\": "test/suite/functional"
+            "DoclerLabs\\CodeceptionSlimModule\\Test\\Functional\\": "test/suite/functional",
+            "DoclerLabs\\CodeceptionSlimModule\\Test\\Unit\\": "test/suite/unit"
         }
     },
     "config": {

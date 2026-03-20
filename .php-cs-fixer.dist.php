@@ -49,7 +49,9 @@ return $config->setRules(
             ],
             'phpdoc_separation'                         => true,
             'phpdoc_single_line_var_spacing'            => true,
-            'phpdoc_to_comment'                         => true,
+            'phpdoc_to_comment'                         => [
+                'ignored_tags' => ['var'],
+            ],
             'phpdoc_trim'                               => true,
             'phpdoc_var_without_name'                   => true,
             'return_type_declaration'                   => [

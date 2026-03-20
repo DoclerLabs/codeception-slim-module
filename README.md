@@ -51,6 +51,23 @@ modules:
 ```
 
 The `application` property is a relative path to file which returns your `Slim\App` instance.
+
+You can also configure default headers that will be sent with every request using the `headers` option:
+
+```yaml
+modules:
+  enabled:
+    - REST:
+        depends: DoclerLabs\CodeceptionSlimModule\Module\Slim
+
+  config:
+    DoclerLabs\CodeceptionSlimModule\Module\Slim:
+      application: path/to/application.php
+      headers:
+        Content-Type: application/json
+        Accept: application/json
+```
+
 Here is the minimum `application.php` content:
 
 ```php
@@ -68,7 +85,6 @@ return $app;
 ## Testing your API endpoints
 
 ```php
-
 class UserCest
 {
     public function getUserReturnsWithEmail(FunctionalTester $I): void
@@ -83,6 +99,35 @@ class UserCest
                 'email' => 'john.doe@example.com',
             ]
         );
+    }
+}
+```
+
+### With default headers
+
+When you configure default `headers` in your suite configuration, you no longer need to set them manually in each test:
+
+```php
+class UserCest
+{
+    // Content-Type and Accept headers are already set via module config
+    public function getUserReturnsWithEmail(FunctionalTester $I): void
+    {
+        $I->sendGET('/users/John');
+
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseContainsJson(
+            [
+                'email' => 'john.doe@example.com',
+            ]
+        );
+    }
+
+    public function createUserReturnsCreated(FunctionalTester $I): void
+    {
+        $I->sendPOST('/users', ['name' => 'Jane', 'email' => 'jane.doe@example.com']);
+
+        $I->seeResponseCodeIs(201);
     }
 }
 ```
